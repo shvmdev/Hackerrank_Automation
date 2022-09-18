@@ -17,7 +17,7 @@ async function fn() {
 			"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
 		defaultViewport: null,
 		args: ["--start-maximized", "--start-in-incognito"],
-		slowMo: 20,
+		slowMo: 10,
 	});
 	//new  tab open
 	const tab = await browserRepresentativeObj.newPage();
@@ -31,9 +31,11 @@ async function fn() {
 	await waitAndClickTopic("Java", tab);
 	// select questions -> ??  Java Stdin and Stdout I ✔
 	await waitAndClickQuestion("Java Stdin and Stdout I", tab);
+	await tab.waitForTimeout(4000);
 	// write the code ->  -> code read type
 	// code -> input
 	// read -> pupptee pass
+
 	let code = await fs.promises.readFile("./Main.java", "utf-8");
 	await copyPasteQuestion(code, tab);
 	// submit the code  -> button click n-> easy ->
@@ -54,7 +56,7 @@ async function waitAndClickTopic(name, tab) {
 		let idx;
 		for (idx = 0; idx < alltopics.length; idx++) {
 			let cTopic = alltopics[idx].textContent.trim();
-			console.log(cTopic);
+			// console.log(cTopic);
 			if (cTopic == name) {
 				break;
 			}
@@ -72,7 +74,7 @@ async function waitAndClickQuestion(name, tab) {
 	// let elems = await tab.$(".topics-list .topic-card a");
 	// console.log(elems.length);
 	let questions = await tab.evaluate(findAndClick, name);
-	console.log(questions);
+	// console.log(questions);
 	// console.log(idx);
 	function findAndClick(name) {
 		let allQuestions = document.querySelectorAll(
@@ -97,10 +99,10 @@ async function waitAndClickQuestion(name, tab) {
 }
 
 async function copyPasteQuestion(code, tab) {
-	await tab.waitForSelector('input[type="checkbox"]', { visible: true });
-	await tab.click('input[type="checkbox"]');
-	await tab.waitForSelector("textarea[id='input-1']", { visible: true });
-	await tab.type("textarea[id='input-1']", code);
+	await tab.waitForSelector(".checkbox-input", { visible: true });
+	await tab.click('.checkbox-input', {delay:400});
+	await tab.waitForSelector(".input.text-area.custominput.auto-width", {visible: true});
+	await tab.type(".input.text-area.custominput.auto-width", code);
 
 	await tab.keyboard.down("ControlLeft");
 	await tab.keyboard.press("KeyA");
